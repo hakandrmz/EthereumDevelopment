@@ -1,0 +1,147 @@
+<%- include('header') -%> <% if(name==''){ %> <%- include('navbar') %> <% }
+else{ %> <%- include('navbar', {name: name,isadmin:isadmin}); %> <% } %> <%
+if(isadmin){ %>
+
+<div>
+  <div class="text-center">
+    <a href="/create" class="btn btn-primary btn-lg btn-" role="button"
+      >Oylama Başlat</a
+    >
+  </div>
+
+  <% } else{ %> <% } %>
+  <script>
+    var socket = io.connect("http://localhost");
+    socket.on("connect", function () {
+      socket.on("reload", function (data) {
+        location.reload();
+      });
+    });
+  </script>
+  <script type="text/javascript" src="contract.js"></script>
+
+  <div class="container">
+    <table id="voting-table" class="table table-bordered">
+      <thead>
+        <tr>
+          <th class="col-1">Oylama Durumu</th>
+          <th class="col-2">Oylama Id'si</th>
+          <th class="col-2">Oylama Konusu</th>
+          <th class="col-2">
+            <i class="bi bi-alarm-fill"></i>
+            Başlangıç Bitiş Tarihi
+          </th>
+
+          <th class="col-2">Toplam Oy</th>
+          <th class="col-2">Oylama Dağılımı</th>
+          <th class="col-2">Oy Kullan</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% foundBallots.forEach(function (ballot) { %>
+
+        <tr>
+          <% _startDate = ballot.startDate.toString().slice(3,15) %> <%
+          _finishDate = ballot.finishDate.toString().slice(3,15) %>
+
+          <td>
+            <%= ballot.ballotStatus %> <% if(isadmin===true){ %>
+
+            <form action="/changestatus" method="POST">
+              <div class="form-group" style="margin-bottom: 2%">
+                <div>
+                  <select
+                    class="ui search dropdown"
+                    name="ballotstatus"
+                    required
+                  >
+                    <option value='{"status":"open","id":"<%= ballot._id %>"}'>
+                      open
+                    </option>
+                    <option
+                      value='{"status":"freeze","id":"<%= ballot._id %>"}'
+                    >
+                      freeze
+                    </option>
+                    <option
+                      value='{"status":"closed","id":"<%= ballot._id %>"}'
+                    >
+                      close
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <button id="submit_button" type="submit" class="btn btn-dark">
+                Değiştir
+              </button>
+            </form>
+
+            <% } else{ %> <% } %>
+          </td>
+
+          <td><%= ballot.ballotId %></td>
+          <td><%= ballot.ballotSubject %></td>
+          <td><%= _startDate %> / <%= _finishDate %></td>
+
+          <td>Toplam oy: <span id="total<%=ballot.ballotId%>"></span></td>
+          <td id="votes">
+            Oy Dağılımı: Evet=<span id="upCount<%=ballot.ballotId%>"> </span>
+            Hayır=<span id="downCount<%=ballot.ballotId%>"></span>
+          </td>
+
+          <script>
+            async function getBallotInfos(id) {
+              ballotInfos = await getBallot(id);
+              upVoteCount = Number(ballotInfos.upVote);
+              downVoteCount = Number(ballotInfos.downVote);
+              document.getElementById("total" + id).innerHTML =
+                upVoteCount + downVoteCount;
+              document.getElementById("upCount" + id).innerHTML = upVoteCount;
+              document.getElementById(
+                "downCount" + id
+              ).innerHTML = downVoteCount;
+            }
+            $(function () {
+              getBallotInfos("<%= ballot.ballotId %>");
+            });
+          </script>
+
+          <td>
+            <% if(ballot.ballotStatus!="open"){ %>
+            <button type="button" class="btn btn-success disabled" disabled>
+              Evet
+            </button>
+            <button type="button" class="btn btn-danger disabled" disabled>
+              Hayır
+            </button>
+
+            <% } else{ %>
+
+            <button
+              id="upvotebutton"
+              type="button"
+              onclick="addUpVote('<%= ballot.ballotId %>');"
+              class="btn btn-success"
+            >
+              Evet
+            </button>
+
+            <button
+              id="downvotebutton"
+              type="button"
+              onclick="addDownVote('<%= ballot.ballotId %>');"
+              class="btn btn-danger"
+            >
+              Hayır
+            </button>
+
+            <% } %>
+          </td>
+        </tr>
+
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

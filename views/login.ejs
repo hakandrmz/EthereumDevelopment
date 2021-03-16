@@ -1,0 +1,66 @@
+<%- include('header') %> <% if(name==='undefined'){ %> <%- include('navbar') %>
+<% } else{ %> <%- include('navbar', {name: name}); %> <% } %>
+
+<div class="container mt-5">
+  <h1 class="text-center">Giriş Yap</h1>
+
+  <div class="d-flex justify-content-center text-center">
+    <div class="w-50 p-3">
+      <div class="card">
+        <div class="card-body">
+          <!-- Makes POST request to /register route -->
+          <%- include ("./partials/messages"); %>
+          <form action="/users/login" method="POST">
+            <!--      <div class="form-group" style="margin-bottom: 2%">
+              <label for="role">Kullanıcı Rolünüz</label>
+              <div>
+                <select class="ui search dropdown" name="isAdmin" required>
+                  <option value=true>Admin</option>
+                  <option value=false>Kullanıcı</option>
+                </select>
+              </div>
+            </div> -->
+            <div class="form-group" style="margin-bottom: 2%">
+              <label for="username">Kullanıcı Adınız</label>
+              <input
+                id="username"
+                type="role"
+                class="form-control"
+                name="username"
+                required
+              />
+              <script>
+                $(function () {
+                  $("#username").on("keypress", function (e) {
+                    if (e.which == 32) return false;
+                  });
+                });
+                $(function () {
+                  $("#address").on("keypress", function (e) {
+                    if (e.which == 32) return false;
+                  });
+                });
+              </script>
+            </div>
+            <div class="form-group" style="margin-bottom: 2%">
+              <label for="walletcode">Kullanıcı Cüzdan Kodunuz</label>
+              <input
+                id="address"
+                type="address"
+                class="form-control"
+                name="address"
+                placeholder="0x Dahil Cüzdan Kodunuzu Giriniz"
+                required
+              />
+              <script></script>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-dark">Giriş yap</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('footer') -%>

@@ -1,0 +1,27 @@
+<%- include('header') %> <%- include('navbar', {name: name,isadmin:isadmin}); %>
+<% if(name){ %>
+    <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Profil Bilgileriniz.</h5>
+          <% if(isadmin){ %>
+            <h1>Admin</h1>
+            <h3 class="card-text"><%= name %></h3>
+            <h3 class="card-text">Adresiniz: 0x**************************************</h3>
+          <% } else{ %>  
+            <h1>User<h1>
+            <h3 class="card-text"><%= name %></h3>
+            <h3 class="card-text">Adresiniz: 0x**************************************</h3>
+         <% } %>          
+         <a href="/" class="btn btn-primary">Anasayfaya Dön</a>
+        </div>
+        
+      </div>
+  <% } else{ %>  
+    <div class="align-self-center">
+        <h1 class="text-center text-danger">HESAP BİLGİLERİNİ GÖREBİLMENİZ İÇİN GİRİŞ YAPMALISINIZ.</h1>
+        <a href="/users/login" class="text-center btn btn-primary">Giriş Yap</a>
+
+    </div>
+ <% } %>
+
+

@@ -1,0 +1,177 @@
+<%- include('header') %> <%- include('navbar', {name: name,isadmin:isadmin}); %>
+
+<div class="border border-light p-3 mb-4">
+  <div
+    class="d-flex align-items-center justify-content-center"
+    style="height: 350px"
+  >
+    <div class="p-2 bd-highlight col-example">
+      <img
+        id="home-vote-img"
+        src="https://image.flaticon.com/icons/png/512/95/95375.png"
+        alt="vote-img"
+      />
+    </div>
+    <div id="text-1" class="p-2 bd-highlight col-example">
+      Akıllı Sözleşmeler ile Oylama Uygulaması
+    </div>
+  </div>
+</div>
+
+<style>
+  #text-1 {
+    display: block;
+    font-size: 42px;
+    margin-right: auto;
+    width: 40%;
+  }
+  #home-vote-img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+  }
+</style>
+<script>
+  async function loadWeb3() {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      window.ethereum.enable();
+    }
+  }
+  async function loadContract() {
+    return await new window.web3.eth.Contract(
+      [
+        {
+          constant: false,
+          inputs: [
+            {
+              name: "ballotKey",
+              type: "uint256",
+            },
+          ],
+          name: "newBallot",
+          outputs: [
+            {
+              name: "success",
+              type: "bool",
+            },
+          ],
+          payable: false,
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          constant: true,
+          inputs: [],
+          name: "getBallotCount",
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+            },
+          ],
+          payable: false,
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          constant: false,
+          inputs: [
+            {
+              name: "ballotKey",
+              type: "uint256",
+            },
+            {
+              name: "vote",
+              type: "uint256",
+            },
+          ],
+          name: "addAnswer",
+          outputs: [
+            {
+              name: "success",
+              type: "bool",
+            },
+          ],
+          payable: false,
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          constant: true,
+          inputs: [
+            {
+              name: "ballotKey",
+              type: "uint256",
+            },
+          ],
+          name: "getBallotAnswerCount",
+          outputs: [
+            {
+              name: "answerCount",
+              type: "uint256",
+            },
+          ],
+          payable: false,
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          constant: true,
+          inputs: [],
+          name: "getballotListKeys",
+          outputs: [
+            {
+              name: "",
+              type: "uint256[]",
+            },
+          ],
+          payable: false,
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          constant: true,
+          inputs: [
+            {
+              name: "ballotKey",
+              type: "uint256",
+            },
+          ],
+          name: "getBallot",
+          outputs: [
+            {
+              name: "id",
+              type: "uint256",
+            },
+            {
+              name: "upVote",
+              type: "uint256",
+            },
+            {
+              name: "downVote",
+              type: "uint256",
+            },
+          ],
+          payable: false,
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+      "0xB16bB2E19641A9e9f12ECbf1a2F059f1F661994c"
+    );
+  }
+  async function load() {
+    await loadWeb3();
+    window.contract = await loadContract();
+    updateStatus("Bağlı");
+  }
+  function updateStatus(status) {
+    const statusEl = document.getElementById("status");
+    statusEl.innerHTML = status;
+  }
+  load();
+</script>
+
+<%- include('footer') -%>

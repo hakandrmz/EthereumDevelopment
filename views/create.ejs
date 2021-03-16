@@ -1,0 +1,131 @@
+<%- include('header') %> <%- include('navbar', {name: name,isadmin:isadmin}); %>
+<% if(!isadmin){ %>
+
+<h1 id="warning-text" class="text-center">
+  Admin olarak giriş yapman gerekiyor.
+</h1>
+<% } else{ %>
+
+<div class="container mt-5">
+  <h1>Yeni Oylama Başlat</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <%- include ("./partials/messages"); %>
+          <form action="/create" method="POST">
+            <div class="form-group" style="margin-bottom: 2%">
+              <label for="role">Yeni Oylama Bilgilerini Giriniz</label>
+              <div>
+                <select class="ui search dropdown" name="status" required>
+                  <option value="open">Open</option>
+                  <option value="freeze">Freeze</option>
+                  <option value="closed">Closed</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 2%">
+              <label for="ballot">Oylama ID</label>
+
+              <input
+                onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                id="ballotid"
+                class="form-control"
+                name="ballotid"
+                autocomplete="off"
+                required
+              />
+              <script>
+                $("input").on("paste", function (event) {
+                  if (
+                    event.originalEvent.clipboardData
+                      .getData("Text")
+                      .match(/[^\d]/)
+                  ) {
+                    event.preventDefault();
+                  }
+                });
+
+                $("input").on("keypress", function (event) {
+                  if (event.which < 48 || event.which > 58) {
+                    return false;
+                  }
+                });
+              </script>
+            </div>
+            <div class="form-group" style="margin-bottom: 2%">
+              <label for="ballot">Oylama Başlığı</label>
+              <input
+                id="ballot-subject"
+                type="role"
+                class="form-control"
+                name="ballotsubject"
+                required
+              />
+            </div>
+            <div class="form-group" style="margin-bottom: 2%">
+              <label id="finishdate" for="start">Bitiş tarihini giriniz</label>
+              <script>
+                function formatDate(date) {
+                  var d = new Date(date),
+                    month = "" + (d.getMonth() + 1),
+                    day = "" + d.getDate(),
+                    year = d.getFullYear();
+
+                  if (month.length < 2) month = "0" + month;
+                  if (day.length < 2) day = "0" + day;
+
+                  return [year, month, day].join("-");
+                }
+                dateNow = formatDate(Date());
+                function changeMinDate(t) {
+                  var input = document.getElementById("finishdate");
+                  console.log(dateNow);
+                  input.setAttribute("min",t)
+                }
+                changeMinDate(dateNow);
+              </script>
+              <input
+                id="finishdate"
+                type="date"
+                id="finish"
+                name="finishdate"
+                min="2021-03-16"
+                max="2040-12-31"
+              />
+            </div>
+
+            <button
+              onclick="createBallot();"
+              id="submit_button"
+              type="submit"
+              class="btn btn-dark"
+            >
+              Oylamayı Başlat
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('footer') -%> <% } %>
+<style>
+  #warning-text {
+    padding: 70px 0;
+    text-align: center;
+  }
+
+  #finish-date {
+    display: block;
+    font: 1rem "Fira Sans", sans-serif;
+  }
+
+  #finishdate,
+  #finish-date {
+    margin: 0.4rem 0;
+  }
+</style>
+<script type="text/javascript" src="contract.js"></script>

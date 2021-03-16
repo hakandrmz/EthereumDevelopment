@@ -1,0 +1,53 @@
+<!-- NAVBAR-->
+
+<nav class="navbar navbar-expand-md py-4 navbar-light shadow-sm">
+  <div class="container">
+    <a href="/" class="navbar-brand"> Akıllı Sözleşmeler ile Oylama Uygulaması </a>
+
+    <div id="navbarSupportedContent2" class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link">
+            Durum: <span id="status">Bağlanıyor...</span>
+          </a>
+        </li>
+
+        <li class="nav-item active">
+          <a href="/" class="btn btn-secondary nav-link">Anasayfa</a>
+        </li>
+        <li class="nav-item active">
+          <a href="/dashboard" class="btn btn-secondary nav-link"
+            >Oylama Sayfası</a
+          >
+        </li>
+
+        <% if(name==undefined){ %>
+        <li class="nav-item active">
+          <a href="/users/register" class="btn btn-secondary nav-link"
+            >Kayıt Ol</a
+          >
+        </li>
+        <li class="nav-item active">
+          <a href="/users/login" class="btn btn-secondary nav-link"
+            >Giriş Yap</a
+          >
+        </li>
+        <% } else{ %>
+
+        <li class="nav-item active">
+          <a href="/users/account" class="btn btn-secondary"> <%=name %> </a>
+        </li>
+
+        <a href="/users/logout" class="btn btn-secondary">Logout</a>
+
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav-item {
+    margin-right: 0rem;
+  }
+</style>
