@@ -25,8 +25,9 @@ app.use(express.urlencoded({ extended: false }));
 
 //socket settings
 var http = require("http").Server(app);
-var io = require("socket.io")(http, { cors: { origin: '*' } });
-
+var io = require("socket.io")(http, {
+  cors: { origin: "*", transports: ["xhr-polling"] },
+});
 
 //Connecting to DB and socket settings
 const Ballots = require("./model/Ballot");

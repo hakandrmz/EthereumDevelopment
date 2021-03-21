@@ -25,7 +25,7 @@ if(isadmin){ %>
       <thead>
         <tr>
           <th class="col-1">Oylama Durumu</th>
-          <th class="col-2">Oylama Id'si</th>
+          <th class="col-2" onclick="sortTable(0)"> <i class="fas fa-sort"></i> Oylama Id'si</th>
           <th class="col-2">Oylama Konusu</th>
           <th class="col-2">
             <i class="bi bi-alarm-fill"></i>
@@ -46,7 +46,7 @@ if(isadmin){ %>
           _finishDate = ballot.finishDate.toString().slice(3,15) %>
 
           <td>
-            <%= ballot.ballotStatus %> <% if(isadmin===true){ %>
+            <%= ballot.ballotStatus.charAt(0).toUpperCase() + ballot.ballotStatus.slice(1); %> <% if(isadmin===true){ %>
 
             <form action="/changestatus" method="POST">
               <div class="form-group" style="margin-bottom: 2%">
@@ -57,17 +57,17 @@ if(isadmin){ %>
                     required
                   >
                     <option value='{"status":"open","id":"<%= ballot._id %>"}'>
-                      open
+                      Open
                     </option>
                     <option
                       value='{"status":"freeze","id":"<%= ballot._id %>"}'
                     >
-                      freeze
+                      Freeze
                     </option>
                     <option
                       value='{"status":"closed","id":"<%= ballot._id %>"}'
                     >
-                      close
+                      Close
                     </option>
                   </select>
                 </div>
@@ -79,7 +79,6 @@ if(isadmin){ %>
 
             <% } else{ %> <% } %>
           </td>
-
           <td><%= ballot.ballotId %></td>
           <td><%= ballot.ballotSubject %></td>
           <td><%= _startDate %> / <%= _finishDate %></td>
@@ -89,7 +88,6 @@ if(isadmin){ %>
             Oy Dağılımı: Evet=<span id="upCount<%=ballot.ballotId%>"> </span>
             Hayır=<span id="downCount<%=ballot.ballotId%>"></span>
           </td>
-
           <script>
             async function getBallotInfos(id) {
               ballotInfos = await getBallot(id);
@@ -106,7 +104,6 @@ if(isadmin){ %>
               getBallotInfos("<%= ballot.ballotId %>");
             });
           </script>
-
           <td>
             <% if(ballot.ballotStatus!="open"){ %>
             <button type="button" class="btn btn-success disabled" disabled>
@@ -139,9 +136,72 @@ if(isadmin){ %>
             <% } %>
           </td>
         </tr>
-
         <% }) %>
       </tbody>
     </table>
   </div>
 </div>
+<script>
+  function sortTable(n) {
+    var table,
+      rows,
+      switching,
+      i,
+      x,
+      y,
+      shouldSwitch,
+      dir,
+      switchcount = 0;
+    table = document.getElementById("voting-table");
+    switching = true;
+    //Set the sorting direction to ascending:
+    dir = "asc";
+    /*Make a loop that will continue until
+  no switching has been done:*/
+    while (switching) {
+      //start by saying: no switching is done:
+      switching = false;
+      rows = table.rows;
+      /*Loop through all table rows (except the
+    first, which contains table headers):*/
+      for (i = 1; i < rows.length - 1; i++) {
+        //start by saying there should be no switching:
+        shouldSwitch = false;
+        /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+        x = rows[i].getElementsByTagName("TD")[n];
+        y = rows[i + 1].getElementsByTagName("TD")[n];
+        /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+        if (dir == "asc") {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        } else if (dir == "desc") {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        //Each time a switch is done, increase this count by 1:
+        switchcount++;
+      } else {
+        /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+        if (switchcount == 0 && dir == "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+  }
+</script>
