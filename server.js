@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 //socket settings
 var http = require("http").Server(app);
 var io = require("socket.io")(http, {
-  cors: { origin: "*", transports: ["xhr-polling"] },
+  cors: { origin: "*", transports: ["xhr-polling",'websocket'] },
 });
 
 //Connecting to DB and socket settings
