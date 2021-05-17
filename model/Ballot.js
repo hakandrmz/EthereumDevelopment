@@ -12,7 +12,7 @@ const ballotSchema = new mongoose.Schema({
   },
   ballotSubject: {
     type: String,
-    default: "Bitay Yetiştirme Programına başvuru.",
+    default: "Default Oylama Başlığı",
   },
   startDate: {
     type: Date,
